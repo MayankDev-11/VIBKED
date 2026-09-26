@@ -1,0 +1,7 @@
+TODO TO CREATE MINDFUL CHUNKS
+
+-token-based chunking
+-sentence-aware splitting
+-paragraph-aware splitting
+-headings preserve karna
+-page metadata preserve karna
