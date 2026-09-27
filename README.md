@@ -1,7 +1,7 @@
 # VIBKED 
 
 ### Problem Statement Explanation:
-We are building an AI you actually own — runs locally, knows your documents deeply, and can take real actions through MCP tools.
+We are building an AI you actually own — runs locally, knows your documents deeply, and can take real actions through MCP tools.<br>
 -- Building for pdfs for v1.
 
 ### Who is affected: 
