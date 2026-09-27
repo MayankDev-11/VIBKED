@@ -1,14 +1,23 @@
-def chunk_text(text, chunk_size=500, overlap=50):
+def chunk_documents(documents, chunk_size=500, overlap=50):
     chunks = []
 
-    start = 0
+    for document in documents:
+        text = document["text"]
 
-    while start < len(text):
-        end = start + chunk_size
+        start = 0
 
-        chunk = text[start:end]
-        chunks.append(chunk)
+        while start < len(text):
+            end = start + chunk_size
 
-        start = end - overlap
+            chunk = {
+                "text": text[start:end],
+                "metadata": {
+                    key: value for key, value in document.items() if key != "text"
+                },
+            }
+
+            chunks.append(chunk)
+
+            start = end - overlap
 
     return chunks

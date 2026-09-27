@@ -83,24 +83,60 @@ USER QUESTION:
 def answer_question(question, mode="hybrid"):
 
     context = ""
+    sources = []
 
-    # Document retrieval is needed for document and hybrid modes
     if mode in ["document", "hybrid"]:
         results = search_documents(question, n_results=3)
 
         documents = results["documents"][0]
+        metadatas = results["metadatas"][0]
 
-        context = "\n\n---\n\n".join(documents)
+        context_parts = []
+        seen_sources = set()
+
+        for document, metadata in zip(documents, metadatas):
+            source = metadata.get("source", "Unknown source")
+
+            if "page" in metadata:
+                location = f"Page {metadata['page']}"
+
+            elif "sheet" in metadata:
+                location = f"Sheet {metadata['sheet']}"
+
+            elif "slide" in metadata:
+                location = f"Slide {metadata['slide']}"
+
+            else:
+                location = ""
+
+            if location:
+                source_label = f"{source} — {location}"
+            else:
+                source_label = source
+
+            context_parts.append(f"[SOURCE: {source_label}]\n{document}")
+
+            if source_label not in seen_sources:
+                sources.append(source_label)
+                seen_sources.add(source_label)
+
+        context = "\n\n---\n\n".join(context_parts)
 
     answer = ask_qwen(question=question, context=context, mode=mode)
 
-    return answer
+    return answer, sources
 
 
 # Test
-question = "What is Search Engine Optimization?"
+if __name__ == "__main__":
+    question = "What is Search Engine Optimization?"
 
-answer = answer_question(question, mode="general")
+    answer, sources = answer_question(question, mode="document")
 
-print("\n--- VAULT ANSWER ---")
-print(answer)
+    print("\n--- VAULT ANSWER ---")
+    print(answer)
+
+    print("\n--- SOURCES ---")
+
+    for source in sources:
+        print(f"• {source}")

@@ -1,0 +1,2 @@
+VAULT is a local-first private AI system.
+It can search through user documents.
