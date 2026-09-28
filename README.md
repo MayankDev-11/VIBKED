@@ -1,4 +1,4 @@
-# VIBKED — VAULT
+# VIBKED
 
 ### Your Private AI OS 🔐
 
@@ -6,19 +6,19 @@
 
 VIBKED is a **local-first Private AI OS** that turns your documents and conversations into a private, searchable knowledge system.
 
-Unlike cloud-based AI tools where your data is sent to external servers, VAULT is designed to run **locally on your machine** — keeping your documents, memory, and AI interactions under your control.
+Unlike cloud-based AI tools where your data is sent to external servers, VIBKED is designed to run **locally on your machine** — keeping your documents, memory, and AI interactions under your control.
 
 ---
 
-## 🚀 What is VAULT?
+## 🚀 What is VIBKED?
 
-VAULT follows a simple pipeline:
+VIBKED follows a simple pipeline:
 
 **Data → Knowledge → Memory → Reasoning → Action**
 
 You can upload documents such as PDFs, Markdown, TXT, CSV, JSON, DOCX and other supported formats.
 
-VAULT processes these files locally, converts their content into searchable knowledge using embeddings, remembers useful context across conversations, and uses a local LLM to answer questions based on your data.
+VIBKED processes these files locally, converts their content into searchable knowledge using embeddings, remembers useful context across conversations, and uses a local LLM to answer questions based on your data.
 
 ---
 
@@ -48,7 +48,7 @@ VAULT processes these files locally, converts their content into searchable know
   - The model combines retrieved knowledge with conversation context to generate answers.
 
 - 🛠️ **Agentic Actions**
-  - MCP-based tools allow VAULT to interact with external capabilities.
+  - MCP-based tools allow VIBKED to interact with external capabilities.
   - Designed to move beyond simply answering questions.
 
 - ⚡ **Modern Web Interface**
