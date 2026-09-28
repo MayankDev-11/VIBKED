@@ -38,16 +38,15 @@ USER QUESTION:
 {question}
 """
 
-    else:  # hybrid
+    else:
         prompt = f"""
 You are VIBKED, a private AI knowledge assistant.
 
 Answer the user's question by combining:
-1. Information retrieved from the user's document.
+1. Information retrieved from the user's documents.
 2. Your existing general knowledge.
 
 Use the document as the primary source when relevant.
-You may add useful information from your general knowledge.
 
 Do not claim that general knowledge came from the document.
 Do not invent information about the document.
@@ -90,25 +89,31 @@ def answer_question(question, mode="hybrid"):
 
         documents = results["documents"][0]
         metadatas = results["metadatas"][0]
+        distances = results["distances"][0]
 
         context_parts = []
         seen_sources = set()
 
-        for document, metadata in zip(documents, metadatas):
+        for index, (document, metadata, distance) in enumerate(
+            zip(documents, metadatas, distances)
+        ):
             source = metadata.get("source", "Unknown source")
 
-            if "page" in metadata:
-                location = f"Page {metadata['page']}"
+            page = metadata.get("page")
+            sheet = metadata.get("sheet")
+            slide = metadata.get("slide")
 
-            elif "sheet" in metadata:
-                location = f"Sheet {metadata['sheet']}"
-
-            elif "slide" in metadata:
-                location = f"Slide {metadata['slide']}"
-
+            # Location
+            if page is not None:
+                location = f"Page {page}"
+            elif sheet is not None:
+                location = f"Sheet {sheet}"
+            elif slide is not None:
+                location = f"Slide {slide}"
             else:
-                location = ""
+                location = None
 
+            # Context label
             if location:
                 source_label = f"{source} — {location}"
             else:
@@ -116,9 +121,24 @@ def answer_question(question, mode="hybrid"):
 
             context_parts.append(f"[SOURCE: {source_label}]\n{document}")
 
-            if source_label not in seen_sources:
-                sources.append(source_label)
-                seen_sources.add(source_label)
+            # Convert Chroma distance into a simple relevance score
+            score = 1 / (1 + distance)
+
+            source_key = f"{source}|{location}"
+
+            if source_key not in seen_sources:
+                sources.append(
+                    {
+                        "id": f"source-{index}",
+                        "documentName": source,
+                        "page": page,
+                        "excerpt": document[:350].replace("\n", " "),
+                        "score": score,
+                        "type": "document",
+                    }
+                )
+
+                seen_sources.add(source_key)
 
         context = "\n\n---\n\n".join(context_parts)
 
@@ -127,7 +147,6 @@ def answer_question(question, mode="hybrid"):
     return answer, sources
 
 
-# Test
 if __name__ == "__main__":
     question = "What is Search Engine Optimization?"
 
@@ -139,4 +158,4 @@ if __name__ == "__main__":
     print("\n--- SOURCES ---")
 
     for source in sources:
-        print(f"• {source}")
+        print(f"• {source['documentName']} (Page {source.get('page', '-')})")
