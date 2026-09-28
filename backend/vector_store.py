@@ -8,6 +8,12 @@ client = chromadb.PersistentClient(path="data/chroma_db")
 
 collection = client.get_or_create_collection(name="vault_documents")
 
+def delete_file(file_name):
+    collection.delete(
+        where={
+            "source": file_name
+        }
+    )
 
 def ingest_file(file_path):
 

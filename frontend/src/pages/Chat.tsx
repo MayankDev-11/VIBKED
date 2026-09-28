@@ -155,7 +155,7 @@ export default function Chat() {
               <div className="mb-8">
 
                 <h2 className="text-4xl font-semibold tracking-tight">
-                  Ask your vault.
+                  Ask your VIBKED.
                 </h2>
 
                 <p className="mt-3 text-zinc-500">
@@ -219,12 +219,12 @@ export default function Chat() {
 
                 <button
                   onClick={() =>
-                    handleSuggestion("What does VAULT remember?")
+                    handleSuggestion("What does VIBKED remember?")
                   }
                   className="text-left p-4 rounded-xl border border-white/10 bg-white/[0.02] hover:bg-white/[0.05] transition"
                 >
                   <p className="text-sm text-zinc-200">
-                    What does VAULT remember?
+                    What does VIBKED remember?
                   </p>
 
                   <p className="text-xs text-zinc-500 mt-1">
@@ -332,7 +332,7 @@ export default function Chat() {
 
                 <span className="h-2 w-2 rounded-full bg-zinc-500 animate-pulse" />
 
-                VAULT is thinking...
+                VIBKED is thinking...
 
               </div>
             )}
@@ -368,7 +368,7 @@ export default function Chat() {
                   setInput(event.target.value)
                 }
                 onKeyDown={handleKeyDown}
-                placeholder="Ask your vault..."
+                placeholder="Ask your VIBKED..."
                 disabled={isThinking}
                 className="flex-1 bg-transparent px-3 py-3 outline-none text-sm text-white placeholder:text-zinc-600 disabled:opacity-50"
               />
@@ -459,7 +459,7 @@ export default function Chat() {
 
 
           <p className="text-[11px] text-zinc-600 text-center mt-3">
-            Your knowledge stays in your local vault.
+            Your knowledge stays in your local VIBKED.
           </p>
 
         </div>

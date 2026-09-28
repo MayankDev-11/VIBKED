@@ -10,7 +10,7 @@ def ask_qwen(question, context="", mode="hybrid"):
 
     if mode == "document":
         prompt = f"""
-You are VAULT, a private document assistant.
+You are VIBKED, a private document assistant.
 
 Answer the user's question using ONLY the provided document context.
 
@@ -28,7 +28,7 @@ USER QUESTION:
 
     elif mode == "general":
         prompt = f"""
-You are VAULT, a helpful AI assistant.
+You are VIBKED, a helpful AI assistant.
 
 Answer the user's question using your existing general knowledge.
 
@@ -40,7 +40,7 @@ USER QUESTION:
 
     else:  # hybrid
         prompt = f"""
-You are VAULT, a private AI knowledge assistant.
+You are VIBKED, a private AI knowledge assistant.
 
 Answer the user's question by combining:
 1. Information retrieved from the user's document.
@@ -133,7 +133,7 @@ if __name__ == "__main__":
 
     answer, sources = answer_question(question, mode="document")
 
-    print("\n--- VAULT ANSWER ---")
+    print("\n--- VIBKED ANSWER ---")
     print(answer)
 
     print("\n--- SOURCES ---")

@@ -44,7 +44,7 @@ export default function AppShell({ children }: AppShellProps) {
             </div>
 
             <span className="font-semibold tracking-wide">
-              VAULT
+              VIBKED
             </span>
           </div>
         </div>

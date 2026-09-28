@@ -276,7 +276,7 @@ export default function Documents() {
               </h2>
 
               <p className="text-xs text-zinc-600 mt-1">
-                {documents.length} documents in your local vault
+                {documents.length} documents in your local VIBKED
               </p>
 
             </div>
@@ -311,7 +311,7 @@ export default function Documents() {
                 </p>
 
                 <p className="text-xs text-zinc-700 mt-1">
-                  Upload a file to start building your vault.
+                  Upload a file to start building your VIBKED.
                 </p>
 
               </div>
