@@ -3,6 +3,7 @@ import type { KeyboardEvent } from "react"
 import { ArrowUp, FileText, GitBranch, Sparkles } from "lucide-react"
 import SourceCard from "../components/chat/SourceCard"
 import type { Source } from "../components/chat/SourceCard"
+import { sendChat } from "../services/api"
 
 type ChatMode = "document" | "hybrid" | "general"
 
@@ -17,26 +18,20 @@ interface Message {
 export default function Chat() {
   const [input, setInput] = useState("")
   const [messages, setMessages] = useState<Message[]>([])
-  const chatEndRef = useRef<HTMLDivElement>(null)
   const [isThinking, setIsThinking] = useState(false)
 
   const [mode, setMode] = useState<ChatMode>("hybrid")
 
-  /*
-   * Automatically scroll to the newest message.
-   *
-   * This runs whenever:
-   * - a new message is added
-   * - the AI starts thinking
-   * - the AI finishes thinking
-   */
+  const chatEndRef = useRef<HTMLDivElement>(null)
+
+  // Automatically scroll to the newest message
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({
       behavior: "smooth",
     })
   }, [messages, isThinking])
 
-  const sendMessage = () => {
+  const sendMessage = async () => {
     const trimmedInput = input.trim()
 
     if (!trimmedInput || isThinking) return
@@ -54,92 +49,44 @@ export default function Chat() {
     setInput("")
     setIsThinking(true)
 
-    /*
-     * Temporary mock AI response.
-     *
-     * Later this will be replaced with:
-     *
-     * Frontend
-     *    ↓
-     * FastAPI
-     *    ↓
-     * RAG / ChromaDB / Mem0
-     *    ↓
-     * Ollama
-     */
-    setTimeout(() => {
-      let response = ""
-      let sources: Source[] = []
-
-      if (currentMode === "document") {
-        response =
-          "Based on the documents in your vault, I found information relevant to your question. In the real implementation, this answer will be generated from chunks retrieved from ChromaDB."
-
-        sources = [
-          {
-            id: "source-1",
-            documentName: "VAULT Architecture.pdf",
-            page: 4,
-            excerpt:
-              "VAULT uses a local-first architecture where documents are processed and retrieved from the user's local knowledge base.",
-            score: 0.94,
-            type: "document",
-          },
-          {
-            id: "source-2",
-            documentName: "second.pdf",
-            page: 8,
-            excerpt:
-              "Relevant information retrieved from the indexed document collection.",
-            score: 0.87,
-            type: "document",
-          },
-        ]
-      }
-
-      if (currentMode === "hybrid") {
-        response =
-          "Using both your documents and persistent memory, VAULT can combine information from your indexed knowledge base with context remembered from previous conversations."
-
-        sources = [
-          {
-            id: "source-3",
-            documentName: "VAULT Architecture.pdf",
-            page: 4,
-            excerpt:
-              "VAULT combines local document retrieval with persistent memory to provide contextual answers.",
-            score: 0.94,
-            type: "document",
-          },
-          {
-            id: "source-4",
-            documentName: "VAULT Memory",
-            excerpt:
-              "The user is currently building VAULT as a local-first private AI second brain.",
-            score: 0.91,
-            type: "memory",
-          },
-        ]
-      }
-
-      if (currentMode === "general") {
-        response =
-          "This answer is generated directly by your local AI model. No document retrieval or persistent memory was used for this response."
-
-        sources = []
-      }
+    try {
+      // Send the question to the real FastAPI backend
+      const result = await sendChat(
+        trimmedInput,
+        currentMode,
+      )
 
       const assistantMessage: Message = {
         id: Date.now() + 1,
         role: "assistant",
-        content: response,
+        content: result.answer,
         mode: currentMode,
-        sources,
+        sources: result.sources ?? [],
       }
 
-      setMessages((current) => [...current, assistantMessage])
+      setMessages((current) => [
+        ...current,
+        assistantMessage,
+      ])
+    } catch (error) {
+      console.error("Chat request failed:", error)
+
+      const errorMessage: Message = {
+        id: Date.now() + 1,
+        role: "assistant",
+        content:
+          "Sorry, I couldn't connect to the local AI backend. Make sure FastAPI and Ollama are running.",
+        mode: currentMode,
+        sources: [],
+      }
+
+      setMessages((current) => [
+        ...current,
+        errorMessage,
+      ])
+    } finally {
       setIsThinking(false)
-    }, 1200)
+    }
   }
 
   const handleKeyDown = (
@@ -178,9 +125,7 @@ export default function Chat() {
   return (
     <div className="h-screen flex flex-col">
 
-      {/* ─────────────────────────────
-          HEADER
-      ───────────────────────────── */}
+      {/* HEADER */}
 
       <header className="h-16 border-b border-white/10 flex items-center px-8 shrink-0">
         <div>
@@ -195,9 +140,7 @@ export default function Chat() {
       </header>
 
 
-      {/* ─────────────────────────────
-          CHAT AREA
-      ───────────────────────────── */}
+      {/* CHAT AREA */}
 
       <main className="flex-1 overflow-y-auto">
 
@@ -297,9 +240,7 @@ export default function Chat() {
 
         ) : (
 
-          /* ─────────────────────────
-             MESSAGES
-          ───────────────────────── */
+          /* MESSAGES */
 
           <div className="max-w-3xl mx-auto px-6 py-8 space-y-8">
 
@@ -397,12 +338,7 @@ export default function Chat() {
             )}
 
 
-            {/* 
-              Invisible element at the bottom of the chat.
-
-              useEffect() scrolls this element into view whenever
-              messages or isThinking changes.
-            */}
+            {/* AUTO SCROLL TARGET */}
 
             <div ref={chatEndRef} />
 
@@ -413,9 +349,7 @@ export default function Chat() {
       </main>
 
 
-      {/* ─────────────────────────────
-          INPUT AREA
-      ───────────────────────────── */}
+      {/* INPUT AREA */}
 
       <div className="p-6 shrink-0">
 
@@ -494,6 +428,7 @@ export default function Chat() {
 
                     </button>
                   )
+
                 })}
 
               </div>
