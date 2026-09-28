@@ -5,6 +5,7 @@ from backend.rag import answer_question
 
 app = FastAPI()
 
+
 class ChatRequest(BaseModel):
     question: str
     mode: str = "document"
@@ -16,14 +17,7 @@ def root():
 
 
 @app.post("/chat")
-
 def chat(request: ChatRequest):
-    answer, sources = answer_question(
-        question=request.question,
-        mode=request.mode
-    )
+    answer, sources = answer_question(question=request.question, mode=request.mode)
 
-    return {
-        "answer": answer,
-        "sources": sources
-    }
+    return {"answer": answer, "sources": sources}
