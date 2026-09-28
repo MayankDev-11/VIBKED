@@ -12,7 +12,6 @@ collection = client.get_or_create_collection(name="vault_documents")
 def ingest_file(file_path):
 
     documents = load_document(file_path)
-
     chunks = chunk_documents(documents)
 
     for i, chunk in enumerate(chunks):

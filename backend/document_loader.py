@@ -112,7 +112,6 @@ def load_json(path):
 
 def load_document(file_path):
     path = Path(file_path)
-
     extension = path.suffix.lower()
 
     if extension == ".pdf":

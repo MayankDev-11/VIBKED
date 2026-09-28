@@ -1,9 +1,7 @@
 from pathlib import Path
-
 from backend.vector_store import ingest_file
 
 SUPPORTED_EXTENSIONS = {".pdf", ".docx", ".xlsx", ".txt", ".md", ".csv", ".json"}
-
 
 data_folder = Path("data")
 
